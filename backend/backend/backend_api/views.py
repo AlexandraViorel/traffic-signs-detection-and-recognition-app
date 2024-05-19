@@ -1,5 +1,4 @@
 import base64
-
 import cv2
 import numpy as np
 from PIL import Image
@@ -8,9 +7,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from ultralytics import YOLO
+from datetime import date
 
 from .serializers import UploadSerializer
-from .models import Upload, TrafficSignDetection
+from .models import Upload, TrafficSignDetection, Prediction
 
 
 def frames_extraction(video_path):
@@ -80,9 +80,25 @@ class ImageUploadView(APIView):
                     'box': [x1, y1, x2, y2]
                 })
 
-            detection = TrafficSignDetection.objects.create(
-                number_of_signs=len(detections)
+            # Check if a record with today's date already exists
+            today = date.today()
+            detection, created = TrafficSignDetection.objects.get_or_create(
+                detection_date=today,
+                defaults={'number_of_signs': len(detections)}
             )
+
+            if not created:
+                # If the record exists, update the number_of_signs
+                detection.number_of_signs += len(detections)
+                detection.save()
+
+            for prediction in predictions:
+                Prediction.objects.create(
+                    detection=detection,
+                    class_id=prediction['class_id'],
+                    box=prediction['box'],
+                    cropped_image=cropped_images[predictions.index(prediction)]
+                )
 
             response_data = {
                 'detection_date': detection.detection_date,
@@ -90,7 +106,7 @@ class ImageUploadView(APIView):
                 'predictions': predictions,
                 'cropped_images': cropped_images
             }
-            return Response(response_data, status=status.HTTP_201_CREATED)
+            return Response(response_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

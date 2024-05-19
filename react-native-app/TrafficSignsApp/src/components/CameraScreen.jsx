@@ -3,17 +3,19 @@ import { Camera, CameraType, VideoQuality } from "expo-camera";
 import { useState, useRef } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image, SafeAreaView } from "react-native";
 import { ActivityIndicator, Button, IconButton } from "react-native-paper";
+import { useAppContext } from '../appContext';
 
 
-const CameraScreen = (props: any) => {
+const CameraScreen = (props) => {
+    const {uploadImage} = useAppContext();
     const [cameraType, setCameraType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [isRecording, setIsRecording] = useState(false);
-    const [photo, setPhoto] = useState<any>(null);
-    const [video, setVideo] = useState<any>(null);
-    const [mediaUri, setMediaUri] = useState<any>(null);
+    const [photo, setPhoto] = useState(null);
+    const [video, setVideo] = useState(null);
+    const [mediaUri, setMediaUri] = useState(null);
     const [isVideo, setIsVideo] = useState(false);
-    const cameraRefference = useRef<Camera | null>(null); 
+    const cameraRefference = useRef(null); 
 
     const toggleCameraType = () => {
         setCameraType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
@@ -51,6 +53,37 @@ const CameraScreen = (props: any) => {
 
     const handleKeep = () => {
         console.log('Media accepted:', mediaUri);
+    }
+
+    const uploadAndPredict = async () => {
+        if (!mediaUri) return;
+
+        if (isVideo) {
+            
+        }
+        else {
+            let formData = new FormData();
+        formData.append('file', {
+          uri: mediaUri,
+          type: 'image/jpeg',
+          name: 'image.jpg',
+        });
+
+        try {
+            const response = await uploadImage(formData);
+            console.log(response);
+
+            const { cropped_images, predictions } = response;
+            setCroppedImages(cropped_images);
+            setPredictions(predictions);
+            setImageUri(null);
+            handleGoToDetectedSignsScreen(cropped_images, predictions);
+        }
+        catch (error) {
+            console.log(error);
+            Alert.alert('Image Upload Failed', 'An error occured! Please try again!');
+        }
+        }
     }
     
     const handleDiscard = () => {

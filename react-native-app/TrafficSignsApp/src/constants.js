@@ -1,7 +1,7 @@
 const postOffline = true;
 const putOffline = false;
 const deleteOffline = false;
-const ip = "10.152.2.170:2406";
+const ip = "172.20.10.4:8000";
 
 
 export {postOffline, putOffline, deleteOffline, ip}

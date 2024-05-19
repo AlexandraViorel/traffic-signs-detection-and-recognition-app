@@ -1,12 +1,16 @@
 import { useState, useRef } from "react";
-import { StyleSheet, View, Image, Alert, Dimensions, SafeAreaView } from "react-native";
+import { StyleSheet, View, Image, Alert, Dimensions, SafeAreaView, Text } from "react-native";
 import { ActivityIndicator, Button, IconButton } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
+import { useAppContext } from '../appContext';
 
 
-const UploadImageScreen = (props: any) => {
-    const [imageUri, setImageUri] = useState<any>(null);
-    const [imageDimensions, setImageDimensions] = useState<{ width: number, height: number } | null>(null);
+const UploadImageScreen = (props) => {
+    const {uploadImage} = useAppContext();
+    const [imageUri, setImageUri] = useState(null);
+    const [imageDimensions, setImageDimensions] = useState(null);
+    const [croppedImages, setCroppedImages] = useState([]);
+    const [predictions, setPredictions] = useState([]);
 
     const pickImage = async () => {
         const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -28,12 +32,40 @@ const UploadImageScreen = (props: any) => {
         }
     }
 
-    const handleKeep = () => {
-        console.log('Media accepted:', imageUri);
+    const handleGoToDetectedSignsScreen = (croppedImages, predictions) => {
+        props.navigation.navigate("DetectedSignsScreen", { croppedImages, predictions });
+    }
+
+    const uploadImageAndPredict = async () => {
+        if (!imageUri) return;
+
+        let formData = new FormData();
+        formData.append('file', {
+          uri: imageUri,
+          type: 'image/jpeg',
+          name: 'image.jpg',
+        });
+
+        try {
+            const response = await uploadImage(formData);
+            console.log(response);
+
+            const { cropped_images, predictions } = response;
+            setCroppedImages(cropped_images);
+            setPredictions(predictions);
+            setImageUri(null);
+            handleGoToDetectedSignsScreen(cropped_images, predictions);
+        }
+        catch (error) {
+            console.log(error);
+            Alert.alert('Image Upload Failed', 'An error occured! Please try again!');
+        }
     }
     
     const handleDiscard = () => {
         setImageUri(null);
+        setCroppedImages([]);
+        setPredictions([]);
     }
 
     if (imageUri && imageDimensions) {
@@ -52,16 +84,19 @@ const UploadImageScreen = (props: any) => {
                     <Image source={{uri: imageUri}} style={[styles.media, imageStyle]} resizeMode="contain" /> 
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button mode="contained" onPress={handleKeep}>Keep</Button>
+                    <Button mode="contained" onPress={uploadImageAndPredict}>Keep</Button>
                     <Button mode="contained" onPress={handleDiscard}>Discard</Button>
                 </View>
             </View>
         )
     }
 
+
+
     return (
-        <View style={styles.container}>
-            <Button mode="contained" onPress={pickImage}>Select an Image from Camera Roll</Button>
+        <View style={styles.container}>                
+                {croppedImages.length === 0 &&
+                    <Button mode="contained" onPress={pickImage}>Select an Image from Camera Roll</Button>}
         </View>
     );
 
@@ -111,6 +146,10 @@ const styles = StyleSheet.create({
     },
     separator: {
         height: 10,
+    },
+    croppedImage: {
+        width: 100,
+        height: 100,
     },
   });
 

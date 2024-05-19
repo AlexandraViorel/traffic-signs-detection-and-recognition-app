@@ -1,24 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useAppContext } from "../appContext";
-import { Entity } from "../entities/Entity";
 import { ActivityIndicator, Button, Card, IconButton, Title } from "react-native-paper";
 import { Alert, ScrollView, View, Text, StyleSheet } from "react-native";
-import { SubEntity } from "../entities/SubEntity";
-import { ip } from "../constants";
 
-interface MainScreenProps {
-    navigation : any;
-    route : any;
-}
-
-const MainScreen = (props: any) => {
+const MainScreen = (props) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
     }, []);
-
-
 
     if (loading) {
         return (

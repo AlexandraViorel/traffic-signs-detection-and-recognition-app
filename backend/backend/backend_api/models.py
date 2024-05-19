@@ -11,4 +11,11 @@ class TrafficSignDetection(models.Model):
 
 class Upload(models.Model):
     file = models.FileField(upload_to='uploads/')
-    uploaded_at = models.DateField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
+class Prediction(models.Model):
+    predicted_class_id = models.IntegerField()
+    box = models.JSONField()
+    cropped_image = models.TextField()
+    is_prediction_correct = models.BooleanField()

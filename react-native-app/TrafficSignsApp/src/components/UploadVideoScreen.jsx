@@ -5,8 +5,8 @@ import { ActivityIndicator, Button, IconButton } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 
 
-const UploadVideoScreen = (props: any) => {
-    const [videoUri, setVideoUri] = useState<any>(null);
+const UploadVideoScreen = (props) => {
+    const [videoUri, setVideoUri] = useState(null);
 
     const pickVideo = async () => {
         const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();

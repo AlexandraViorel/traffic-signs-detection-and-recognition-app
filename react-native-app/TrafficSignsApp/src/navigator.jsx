@@ -5,6 +5,7 @@ import MainScreen from "./components/MainScreen";
 import CameraScreen from "./components/CameraScreen";
 import UploadImageScreen from "./components/UploadImageScreen";
 import UploadVideoScreen from "./components/UploadVideoScreen"; 
+import DetectedSignsScreen from "./components/DetectedSignsScreen";
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ const AppNavigator = () => (
             <Screen name="CameraScreen" component={CameraScreen} />
             <Screen name="UploadImageScreen" component={UploadImageScreen} />
             <Screen name="UploadVideoScreen" component={UploadVideoScreen} />
+            <Screen name="DetectedSignsScreen" component={DetectedSignsScreen} />
         </Navigator>
     </NavigationContainer>
 )
