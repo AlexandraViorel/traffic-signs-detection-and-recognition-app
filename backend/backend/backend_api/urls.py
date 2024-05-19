@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import ImageUploadView, VideoUploadView
+from .views import ImageUploadView, VideoUploadView, PredictionListView, UpdatePredictionView
 
 urlpatterns = [
     path('uploadimage/', ImageUploadView.as_view(), name='uploadimage'),
     path('uploadvideo/', VideoUploadView.as_view(), name='uploadvideo'),
+    path('predictions/', PredictionListView.as_view(), name='predictions-list'),
+    path('predictions/<int:id>/', UpdatePredictionView.as_view(), name='predictions-update')
 ]

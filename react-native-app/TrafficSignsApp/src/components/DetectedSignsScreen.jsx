@@ -4,40 +4,55 @@ import { ActivityIndicator, Card, Title, Button, IconButton } from "react-native
 import * as ImagePicker from 'expo-image-picker';
 import { useAppContext } from '../appContext';
 
-export const renderEntityCard = (index, prediction, image) => {
-    // const handleOnEditButton = () => { onIconPress(entity);}
-    // const handleOnEditButton = () => {props.navigation.navigate("Update", {paramKey: entity})} // for update all fields
-    // const handleOnDeleteButton = () => {props.navigation.navigate("Delete", {paramKey: entity})}
-    const handleDetails = () => {{props.navigation.navigate("Details", {paramKey: entity})}}
-  
-    return (
-      <>
-        <Card key={index}>
-        <Card.Content>
-          <Title>{`Predicted: ${prediction}`}</Title>
-          <Image
-                source={{ uri: `data:image/jpeg;base64,${image}` }}
-                style={styles.croppedImage}
-          />
-        </Card.Content>
-        <Card.Actions>
-        {/* <IconButton icon = "pencil"  onPress={handleOnEditButton} /> */}
-        {/* <IconButton icon = "delete"  onPress={handleOnDeleteButton} /> */}
-        {/* <IconButton icon = "arrow-right"  onPress={handleDetails} /> */}
-      </Card.Actions>
-      </Card>
-      </>
-  );
-}
 
-const DetectedSignsScreen = ({route, navigation}) => {
-    const { croppedImages, predictions } = route.params;
+const DetectedSignsScreen = (props) => {
+    const { updatePrediction } = useAppContext();
+    const [croppedImages, setCroppedImages] = useState([]);
+    const [predictions, setPredictions] = useState([]);
+
+    useEffect(() => {
+        setCroppedImages(props.route.params.croppedImages);
+        setPredictions(props.route.params.predictions);
+    }, []);
+
+    const handleUpdatePrediction = async (predictionId, isCorrect) => {
+        try {
+            const response = await updatePrediction(predictionId, isCorrect);
+            Alert.alert('Feedback Successful', `Your feedback on the prediction was provided successfully!`);
+        }
+        catch (error) {
+            Alert.alert('Feedback Failed', 'An error occurred! Please try again!');
+        }
+    }
+
+    const renderEntityCard = (index, prediction, image, predictionId) => {
+        const handleCorrectPrediction = () => { handleUpdatePrediction(predictionId, true); };
+        const handleIncorrectPrediction = () => { handleUpdatePrediction(predictionId, false); };
+      
+        return (
+          <>
+            <Card key={index}>
+            <Card.Content>
+              <Title>{`Predicted: ${prediction}`}</Title>
+              <Image
+                    source={{ uri: `data:image/jpeg;base64,${image}` }}
+                    style={styles.croppedImage}
+              />
+            </Card.Content>
+            <Card.Actions>
+            <IconButton icon = "check-circle"  onPress={handleCorrectPrediction} />
+            <IconButton icon = "cancel"  onPress={handleIncorrectPrediction} />
+          </Card.Actions>
+          </Card>
+          </>
+      );
+    }
 
     return (
         
         <ScrollView>
             <Text style={styles.text}>Detected Traffic Signs:</Text>
-            {croppedImages.map((base64Image, index) => renderEntityCard(index, predictions[index].class_id, base64Image))}    
+            {croppedImages.map((base64Image, index) => renderEntityCard(index, predictions[index].class_name, base64Image, predictions[index].id))}    
         </ScrollView>
     );
 

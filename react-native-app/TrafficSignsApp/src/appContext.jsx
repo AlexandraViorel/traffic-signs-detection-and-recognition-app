@@ -19,8 +19,19 @@ const AppProvider = ({ children }) => {
         }
     }
 
+    const updatePrediction = async(predictionId, isCorrect) => {
+        try {
+            const response = await services.ApiService.updatePrediction(predictionId, isCorrect);
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     const values = {
         uploadImage,
+        updatePrediction,
     }
 
     return <AppContext.Provider value={values}>{children}</AppContext.Provider>;

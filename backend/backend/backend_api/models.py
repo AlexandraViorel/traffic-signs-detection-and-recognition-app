@@ -16,6 +16,7 @@ class Upload(models.Model):
 
 class Prediction(models.Model):
     predicted_class_id = models.IntegerField()
+    predicted_class_name = models.CharField(max_length=255, default="Unknown")
     box = models.JSONField()
     cropped_image = models.TextField()
-    is_prediction_correct = models.BooleanField()
+    is_prediction_correct = models.BooleanField(null=True)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TrafficSignDetection, Upload
+from .models import TrafficSignDetection, Upload, Prediction
 
 
 class TrafficSignDetectionSerializer(serializers.ModelSerializer):
@@ -16,5 +16,11 @@ class UploadSerializer(serializers.ModelSerializer):
 
 class PredictionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Upload
-        fields = ('id', 'predicted_class_id', 'box', 'cropped_image', 'is_prediction_correct')
+        model = Prediction
+        fields = ('id', 'predicted_class_id', 'predicted_class_name', 'box', 'cropped_image', 'is_prediction_correct')
+
+
+class PredictionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prediction
+        fields = ['is_prediction_correct']
