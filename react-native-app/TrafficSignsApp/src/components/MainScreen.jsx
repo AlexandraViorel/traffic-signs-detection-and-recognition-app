@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useAppContext } from "../appContext";
-import { ActivityIndicator, Button, Card, IconButton, Title } from "react-native-paper";
-import { Alert, ScrollView, View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Button } from "react-native-paper";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 
 const MainScreen = (props) => {
     const [loading, setLoading] = useState(true);
@@ -18,51 +17,35 @@ const MainScreen = (props) => {
         )
       }
     
-    const handleOpenCamera = () => {props.navigation.navigate("CameraScreen")}
-    const handleUploadImage = () => {props.navigation.navigate("UploadImageScreen")}
-    const handleUploadVideo = () => {props.navigation.navigate("UploadVideoScreen")}
+    const handleGoToOptionsScreen = () => {props.navigation.navigate("Options")}
 
 
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button 
-          mode="contained"
-          icon="camera" 
-          onPress={handleOpenCamera}
-          style={styles.button}
-        >
-          Open Camera
-        </Button>
-        <Button 
-          mode="contained" 
-          icon="image"
-          onPress={handleUploadImage}
-          style={styles.button}
-        >
-          Upload Image
-        </Button>
-        <Button 
-          mode="contained" 
-          icon="video"
-          onPress={handleUploadVideo}
-          style={styles.button}
-        >
-          Upload Video
-        </Button>
-        <Button 
-          mode="contained" 
-          icon="traffic-light"
-          style={styles.button}
-        >
-          Show Statistics
-        </Button>
-      </View>
-    </ScrollView>
+      <ImageBackground source={require('../../assets/background.jpg')} style={styles.background}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Welcome to the Traffic Sign Detection App</Text>
+          <Text style={styles.description}>
+            This app allows you to upload images/videos or use your camera to detect and classify traffic signs.
+          </Text>
+          <Button
+            mode="contained" 
+            onPress={handleGoToOptionsScreen}
+            style={styles.button}
+            buttonColor="#4682B4"
+          >
+              Let's get started
+          </Button>
+        </View>
+      </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+},
   container: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -74,6 +57,20 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 10,
+  },
+
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    marginHorizontal: 30,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    marginHorizontal: 10,
   },
 });
 

@@ -6,17 +6,21 @@ import CameraScreen from "./components/CameraScreen";
 import UploadImageScreen from "./components/UploadImageScreen";
 import UploadVideoScreen from "./components/UploadVideoScreen"; 
 import DetectedSignsScreen from "./components/DetectedSignsScreen";
+import OptionsScreen from "./components/OptionsScreen";
+import DetectionStatisticsScreen from "./components/DetectionStatisticsScreen";
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
 const AppNavigator = () => (
     <NavigationContainer>
         <Navigator initialRouteName="Main">
-            <Screen name="Main" component={MainScreen} />
-            <Screen name="CameraScreen" component={CameraScreen} />
-            <Screen name="UploadImageScreen" component={UploadImageScreen} />
-            <Screen name="UploadVideoScreen" component={UploadVideoScreen} />
-            <Screen name="DetectedSignsScreen" component={DetectedSignsScreen} />
+            <Screen name="Main" options={{ headerShown: false}} component={MainScreen} />
+            <Screen name="Options" options={{ headerShown: false}} component={OptionsScreen} />
+            <Screen name="CameraScreen" options={{ headerShown: false}} component={CameraScreen} />
+            <Screen name="UploadImageScreen" options={{ headerShown: false}} component={UploadImageScreen} />
+            <Screen name="UploadVideoScreen" options={{ headerShown: false}} component={UploadVideoScreen} />
+            <Screen name="DetectedSignsScreen" options={{ headerShown: false, gestureEnabled: false}} component={DetectedSignsScreen} />
+            <Screen name="DetectionStatisticsScreen" options={{ headerShown: false}} component={DetectionStatisticsScreen} />
         </Navigator>
     </NavigationContainer>
 )

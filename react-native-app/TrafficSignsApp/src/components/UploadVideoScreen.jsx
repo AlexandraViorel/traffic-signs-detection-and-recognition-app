@@ -1,12 +1,18 @@
 import { ResizeMode, Video } from "expo-av";
 import { useState, useRef } from "react";
-import { StyleSheet, View, Alert, SafeAreaView } from "react-native";
+import { StyleSheet, View, Alert, Dimensions } from "react-native";
 import { ActivityIndicator, Button, IconButton } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
+import { useAppContext } from '../appContext';
 
 
 const UploadVideoScreen = (props) => {
+    const {uploadVideo} = useAppContext();
     const [videoUri, setVideoUri] = useState(null);
+    const [videoDimensions, setVideoDimensions] = useState(null);
+    const [croppedImages, setCroppedImages] = useState([]);
+    const [predictions, setPredictions] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const pickVideo = async () => {
         const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -22,33 +28,97 @@ const UploadVideoScreen = (props) => {
         });
 
         if (!result.canceled) {
-            setVideoUri(result.assets[0].uri);
+            const { uri, width, height } = result.assets[0];
+            setVideoUri(uri);
+            setVideoDimensions({width, height});
         }
     }
 
-    const handleKeep = () => {
-        console.log('Media accepted:', videoUri);
+    const handleGoToDetectedSignsScreen = (croppedImages, predictions) => {
+        props.navigation.navigate("DetectedSignsScreen", { croppedImages, predictions });
+    }
+
+    const uploadVideoAndPredict = async () => {
+        if (!videoUri) return;
+
+        setLoading(true);
+
+        let formData = new FormData();
+        formData.append('file', {
+          uri: videoUri,
+          type: 'video/mp4',
+          name: 'video.mp4',
+        });
+
+        try {
+            const response = await uploadVideo(formData);
+            console.log(response);
+
+            const { cropped_images, predictions } = response;
+            setCroppedImages(cropped_images);
+            setPredictions(predictions);
+            setVideoUri(null);
+            handleGoToDetectedSignsScreen(cropped_images, predictions);
+        }
+        catch (error) {
+            console.log(error);
+            Alert.alert('Video Upload Failed', 'An error occurred! Please try again!');
+        }
+        finally {
+            setLoading(false);
+        }
     }
     
     const handleDiscard = () => {
         setVideoUri(null);
+        setCroppedImages([]);
+        setPredictions([]);
     }
 
-    if (videoUri) {
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator animating={true} size="large" style={{ paddingTop: "70%" }} />
+            </View>
+        );
+    }
+
+    if (videoUri && videoDimensions) {
+        const { width, height } = videoDimensions;
+        const aspectRatio = width / height;
+
+        const screenDimensions = Dimensions.get('window');
+        const screenAspectRatio = screenDimensions.width / screenDimensions.height;
+        const videoStyle = aspectRatio > screenAspectRatio
+            ? { width: screenDimensions.width, height: screenDimensions.width / aspectRatio }
+            : { width: screenDimensions.height * aspectRatio, height: screenDimensions.height };
+
         return (
             <View style={styles.container}>
                 <View style={styles.mediaContainer}>
                     <Video
                         source={{ uri: videoUri }}
-                        style={styles.media}
+                        style={[styles.media, videoStyle]}
                         useNativeControls
                         resizeMode={ResizeMode.CONTAIN}
                         isLooping
                     />
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button mode="contained" onPress={handleKeep}>Keep</Button>
-                    <Button mode="contained" onPress={handleDiscard}>Discard</Button>
+                    <Button 
+                        mode="contained" 
+                        onPress={uploadVideoAndPredict}
+                        buttonColor="#4682B4"
+                    >
+                        Predict    
+                    </Button>
+                    <Button 
+                        mode="contained" 
+                        onPress={handleDiscard}
+                        buttonColor="#F88379"
+                    >
+                        Discard
+                    </Button>
                 </View>
             </View>
         )
@@ -56,7 +126,14 @@ const UploadVideoScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            <Button mode="contained" onPress={pickVideo}>Select a Video from Camera Roll</Button>
+            {croppedImages.length === 0 &&
+                <Button 
+                    mode="contained"
+                    buttonColor="#4682B4"
+                    onPress={pickVideo}
+                >
+                    Select a Video from Camera Roll
+                </Button>}
         </View>
     );
 

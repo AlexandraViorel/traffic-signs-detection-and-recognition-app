@@ -11,6 +11,7 @@ const UploadImageScreen = (props) => {
     const [imageDimensions, setImageDimensions] = useState(null);
     const [croppedImages, setCroppedImages] = useState([]);
     const [predictions, setPredictions] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const pickImage = async () => {
         const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -39,11 +40,13 @@ const UploadImageScreen = (props) => {
     const uploadImageAndPredict = async () => {
         if (!imageUri) return;
 
+        setLoading(true);
+
         let formData = new FormData();
         formData.append('file', {
-          uri: imageUri,
-          type: 'image/jpeg',
-          name: 'image.jpg',
+            uri: imageUri,
+            type: 'image/jpeg',
+            name: 'image.jpg',
         });
 
         try {
@@ -60,12 +63,23 @@ const UploadImageScreen = (props) => {
             console.log(error);
             Alert.alert('Image Upload Failed', 'An error occured! Please try again!');
         }
+        finally {
+            setLoading(false);
+        }
     }
     
     const handleDiscard = () => {
         setImageUri(null);
         setCroppedImages([]);
         setPredictions([]);
+    }
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator animating={true} size="large" style={{ paddingTop: "70%" }} />
+            </View>
+        );
     }
 
     if (imageUri && imageDimensions) {
@@ -84,8 +98,20 @@ const UploadImageScreen = (props) => {
                     <Image source={{uri: imageUri}} style={[styles.media, imageStyle]} resizeMode="contain" /> 
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button mode="contained" onPress={uploadImageAndPredict}>Keep</Button>
-                    <Button mode="contained" onPress={handleDiscard}>Discard</Button>
+                    <Button 
+                        mode="contained" 
+                        onPress={uploadImageAndPredict} 
+                        buttonColor="#4682B4"
+                    >
+                        Predict
+                    </Button>
+                    <Button 
+                        mode="contained" 
+                        onPress={handleDiscard}
+                        buttonColor="#F88379"
+                    >
+                        Discard
+                    </Button>
                 </View>
             </View>
         )
@@ -95,8 +121,14 @@ const UploadImageScreen = (props) => {
 
     return (
         <View style={styles.container}>                
-                {croppedImages.length === 0 &&
-                    <Button mode="contained" onPress={pickImage}>Select an Image from Camera Roll</Button>}
+            {croppedImages.length === 0 &&
+                <Button 
+                    mode="contained" 
+                    buttonColor="#4682B4"
+                    onPress={pickImage}
+                >
+                    Select an Image from Camera Roll
+                </Button>}
         </View>
     );
 

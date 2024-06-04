@@ -19,6 +19,13 @@ const DetectedSignsScreen = (props) => {
         try {
             const response = await updatePrediction(predictionId, isCorrect);
             Alert.alert('Feedback Successful', `Your feedback on the prediction was provided successfully!`);
+
+            setCroppedImages(croppedImages.filter((_, index) => predictions[index].id !== predictionId));
+            setPredictions(predictions.filter(prediction => prediction.id !== predictionId));
+
+            if (updatedPredictions.length === 0) {
+                handleGoToOptionsScreen();
+            }
         }
         catch (error) {
             Alert.alert('Feedback Failed', 'An error occurred! Please try again!');
@@ -30,29 +37,56 @@ const DetectedSignsScreen = (props) => {
         const handleIncorrectPrediction = () => { handleUpdatePrediction(predictionId, false); };
       
         return (
-          <>
-            <Card key={index}>
-            <Card.Content>
-              <Title>{`Predicted: ${prediction}`}</Title>
-              <Image
-                    source={{ uri: `data:image/jpeg;base64,${image}` }}
-                    style={styles.croppedImage}
-              />
-            </Card.Content>
-            <Card.Actions>
-            <IconButton icon = "check-circle"  onPress={handleCorrectPrediction} />
-            <IconButton icon = "cancel"  onPress={handleIncorrectPrediction} />
-          </Card.Actions>
+            <Card key={index} style={styles.card}>
+                <Card.Content>
+                    <Title>{`Predicted: ${prediction}`}</Title>
+                    <Image
+                        source={{ uri: `data:image/jpeg;base64,${image}` }}
+                        style={styles.croppedImage}
+                    />
+                </Card.Content>
+                <Card.Actions>
+                    <IconButton 
+                        icon="check"  
+                        iconColor="#ffffff"
+                        containerColor="#34b233"
+                        style={styles.iconButton}
+                        onPress={handleCorrectPrediction} />
+                    <IconButton 
+                        icon = "cancel"  
+                        iconColor="#ffffff"
+                        containerColor="#cc0000"
+                        style={styles.iconButton}
+                        onPress={handleIncorrectPrediction} />
+                </Card.Actions>
           </Card>
-          </>
       );
     }
 
+    const handleGoToOptionsScreen = () => {props.navigation.navigate("Options")}
+
+    if (croppedImages.length === 0 && predictions.length === 0) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.noSignsText}>There were no traffic signs detected!</Text>
+                <Button 
+                    mode="contained"
+                    onPress={handleGoToOptionsScreen}
+                    buttonColor="#4682B4"
+                >
+                    Go Back to the Options Screen
+                </Button>
+            </View>
+
+        ) }
+
+
     return (
-        
-        <ScrollView>
-            <Text style={styles.text}>Detected Traffic Signs:</Text>
-            {croppedImages.map((base64Image, index) => renderEntityCard(index, predictions[index].class_name, base64Image, predictions[index].id))}    
+        <ScrollView contentContainerStyle={styles.detectedSignsList}>
+            <Text style={styles.text}>Detected Traffic Signs</Text>
+            <Text style={styles.description}>Help us improve our traffic sign detection and recognition models by providing feedback on the detected traffic signs! 😊</Text>
+            {croppedImages.length !== 0 && croppedImages.map((base64Image, index) => renderEntityCard(index, predictions[index].class_name, base64Image, predictions[index].id))}    
+            <Button mode="contained" onPress={handleGoToOptionsScreen} style={styles.skipButton}>Skip Feedback</Button>
         </ScrollView>
     );
 
@@ -64,44 +98,43 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    mediaContainer: {
-        flex: 1,
-        justifyContent: 'center' ,
+    detectedSignsList: {
+        marginTop: 60,
+        paddingBottom: 100,
+        padding: 20,
         alignItems: 'center',
-        marginBottom: 40,
+    },
+    description: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    card: {
+        marginBottom: 20,
         width: '100%',
-        height: '80%'
     },
-    buttonContainer: {
-        bottom: 25,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '100%',
-    },
-    button: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#007AFF',
-        padding: 10,
-        borderRadius: 5,
-        margin: 20,
-    },
-    actionButton: {
-        marginHorizontal: 10,
-        width: 100,
-      },
     text: {
         fontSize: 18,
         fontWeight: 'bold',
         color: 'black',
+        marginBottom: 20,
+        alignContent: 'center',
+        justifyContent: 'center',
     },
-    media: {
-        width: '100%',
-        height: '100%',
+    noSignsText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'black',
+        marginBottom: 30,
     },
-    separator: {
-        height: 10,
+    skipButton: {
+        marginTop: 20,
+        backgroundColor: '#f44336',
+    },
+    iconButton: {
+        margin: 0,
+        borderWidth: 0,
+        elevation: 0,
     },
     croppedImage: {
         width: 100,

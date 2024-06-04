@@ -19,6 +19,16 @@ const AppProvider = ({ children }) => {
         }
     }
 
+    const uploadVideo = async(formData) => {
+        try {
+            const response = await services.ApiService.uploadVideo(formData);
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     const updatePrediction = async(predictionId, isCorrect) => {
         try {
             const response = await services.ApiService.updatePrediction(predictionId, isCorrect);
@@ -29,9 +39,21 @@ const AppProvider = ({ children }) => {
         }
     }
 
+    const getDetectionStatistics = async () => {
+        try {
+            const response = await services.ApiService.getDetectionStatistics();
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     const values = {
         uploadImage,
+        uploadVideo,
         updatePrediction,
+        getDetectionStatistics,
     }
 
     return <AppContext.Provider value={values}>{children}</AppContext.Provider>;
