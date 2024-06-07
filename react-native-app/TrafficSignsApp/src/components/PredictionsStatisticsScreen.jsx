@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Text, Dimensions } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import { StyleSheet, View, ImageBackground, Text, Dimensions } from 'react-native';
+import { BarChart } from 'react-native-chart-kit';
 import { ActivityIndicator } from 'react-native-paper';
 import { useAppContext } from '../appContext';
 
-
-const DetectionStatisticsScreen = () => {
-    const {getDetectionStatistics} = useAppContext();
-    const [data, setData] = useState([]);
+const PredictionsStatisticsScreen = () => {
+    const { getPredictionStatistics } = useAppContext();
+    const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,26 +15,21 @@ const DetectionStatisticsScreen = () => {
 
     const getStats = async () => {
         try {
-            const response = await getDetectionStatistics();
-
+            const response = await getPredictionStatistics();
             setData(response);
         } catch (error) {
             console.error(error);
         } finally {
             setLoading(false);
         }
-
     }
 
     const processDataForChart = () => {
-        const labels = data.map(item => item.detection_date);
-        const values = data.map(item => item.number_of_signs);
-
         return {
-            labels: labels,
+            labels: ['Correct Predictions', 'Incorrect Predictions'],
             datasets: [
                 {
-                    data: values,
+                    data: [data.correct_predictions || 0, data.incorrect_predictions || 0],
                 },
             ],
         };
@@ -50,25 +44,23 @@ const DetectionStatisticsScreen = () => {
     }
 
     return (
-        <ScrollView>
+        <ImageBackground source={require('../../assets/background.jpg')} style={styles.background}>
             <View style={styles.container}>
-                <Text style={styles.title}>Detected Traffic Signs per Day</Text>
-                <Text style={styles.title}>Statistics</Text>
-                <LineChart
+                <Text style={styles.title}>Prediction Accuracy Statistics</Text>
+                <BarChart
                     data={processDataForChart()}
-                    width={Dimensions.get('window').width - 16}
-                    height={600}
+                    width={Dimensions.get('window').width - 32}
+                    height={220}
                     yAxisLabel=""
                     yAxisSuffix=""
                     fromZero
-                    verticalLabelRotation={90}
                     chartConfig={{
                         backgroundColor: '#FFB6C1',
                         backgroundGradientFrom: '#FFB6C1',
                         backgroundGradientTo: '#FFB6C1',
                         decimalPlaces: 0,
-                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(0,0,0, ${opacity})`,
+                        color: (opacity = 1) => `rgba(0,0,0, ${opacity})`,
+                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                         style: {
                             borderRadius: 16,
                         },
@@ -79,25 +71,31 @@ const DetectionStatisticsScreen = () => {
                         },
                     }}
                     style={{
-                        marginTop: 20,
                         marginVertical: 8,
                         borderRadius: 16,
                     }}
+
                 />
             </View>
-        </ScrollView>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'flex-start',
+        backgroundColor: 'white'
+      },
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 20,
         paddingBottom: 100,
         marginTop: 60,
-
+        height: 500,
     },
     loadingContainer: {
         flex: 1,
@@ -106,8 +104,9 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 24,
+        paddingBottom: 50,
         fontWeight: 'bold',
     },
 });
 
-export default DetectionStatisticsScreen;
+export default PredictionsStatisticsScreen;

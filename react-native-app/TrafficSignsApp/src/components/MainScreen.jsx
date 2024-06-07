@@ -31,7 +31,7 @@ const MainScreen = (props) => {
             mode="contained" 
             onPress={handleGoToOptionsScreen}
             style={styles.button}
-            buttonColor="#4682B4"
+            buttonColor="#E37383"
           >
               Let's get started
           </Button>
@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
-},
+    backgroundColor: 'white'
+  },
   container: {
     flexGrow: 1,
     justifyContent: 'center',

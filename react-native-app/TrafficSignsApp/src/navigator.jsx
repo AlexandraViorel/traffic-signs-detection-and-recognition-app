@@ -8,6 +8,8 @@ import UploadVideoScreen from "./components/UploadVideoScreen";
 import DetectedSignsScreen from "./components/DetectedSignsScreen";
 import OptionsScreen from "./components/OptionsScreen";
 import DetectionStatisticsScreen from "./components/DetectionStatisticsScreen";
+import PredictionsStatisticsScreen from "./components/PredictionsStatisticsScreen";
+import StatisticsOptionsScreen from "./components/StatisticsOptionsScreen";
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -20,7 +22,9 @@ const AppNavigator = () => (
             <Screen name="UploadImageScreen" options={{ headerShown: false}} component={UploadImageScreen} />
             <Screen name="UploadVideoScreen" options={{ headerShown: false}} component={UploadVideoScreen} />
             <Screen name="DetectedSignsScreen" options={{ headerShown: false, gestureEnabled: false}} component={DetectedSignsScreen} />
+            <Screen name="StatisticsOptionsScreen" options={{ headerShown: false}} component={StatisticsOptionsScreen} />
             <Screen name="DetectionStatisticsScreen" options={{ headerShown: false}} component={DetectionStatisticsScreen} />
+            <Screen name="PredictionStatisticsScreen" options={{ headerShown: false}} component={PredictionsStatisticsScreen} />
         </Navigator>
     </NavigationContainer>
 )

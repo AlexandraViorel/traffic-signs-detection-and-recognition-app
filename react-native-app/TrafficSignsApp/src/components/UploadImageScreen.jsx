@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { StyleSheet, View, Image, Alert, Dimensions, SafeAreaView, Text } from "react-native";
+import { StyleSheet, View, Image, Alert, Dimensions, ImageBackground } from "react-native";
 import { ActivityIndicator, Button, IconButton } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import { useAppContext } from '../appContext';
@@ -95,22 +95,22 @@ const UploadImageScreen = (props) => {
         return (
             <View style={styles.container}>
                 <View style={styles.mediaContainer}>
-                    <Image source={{uri: imageUri}} style={[styles.media, imageStyle]} resizeMode="contain" /> 
+                    <Image source={{uri: imageUri}} style={[ imageStyle]} resizeMode="contain" /> 
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button 
-                        mode="contained" 
-                        onPress={uploadImageAndPredict} 
-                        buttonColor="#4682B4"
+                <Button 
+                        mode="outlined" 
+                        onPress={handleDiscard}
+                        textColor="#E37383"
                     >
-                        Predict
+                        Discard
                     </Button>
                     <Button 
                         mode="contained" 
-                        onPress={handleDiscard}
-                        buttonColor="#F88379"
+                        onPress={uploadImageAndPredict}
+                        buttonColor="#E37383"
                     >
-                        Discard
+                        Predict    
                     </Button>
                 </View>
             </View>
@@ -120,21 +120,29 @@ const UploadImageScreen = (props) => {
 
 
     return (
-        <View style={styles.container}>                
-            {croppedImages.length === 0 &&
-                <Button 
-                    mode="contained" 
-                    buttonColor="#4682B4"
-                    onPress={pickImage}
-                >
-                    Select an Image from Camera Roll
-                </Button>}
-        </View>
+        <ImageBackground source={require('../../assets/background.jpg')} style={styles.background}>
+            <View style={styles.container}>                
+                {croppedImages.length === 0 &&
+                    <Button 
+                        mode="contained" 
+                        buttonColor="#E37383"
+                        onPress={pickImage}
+                    >
+                        Select an Image from Camera Roll
+                    </Button>}
+            </View>
+        </ImageBackground>
     );
 
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+        backgroundColor: 'white'
+      },
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -146,7 +154,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 40,
         width: '100%',
-        height: '80%'
+        height: '80%',
+        paddingTop: 150,
+        paddingBottom: 100
     },
     buttonContainer: {
         bottom: 25,
@@ -171,13 +181,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: 'white',
-    },
-    media: {
-        width: '100%',
-        height: '100%',
-    },
-    separator: {
-        height: 10,
     },
     croppedImage: {
         width: 100,

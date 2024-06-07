@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { StyleSheet, View, Image, Alert, Dimensions, SafeAreaView, Text, ScrollView } from "react-native";
+import { StyleSheet, View, Image, Alert, ImageBackground, Text, ScrollView } from "react-native";
 import { ActivityIndicator, Card, Title, Button, IconButton } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import { useAppContext } from '../appContext';
@@ -20,14 +20,18 @@ const DetectedSignsScreen = (props) => {
             const response = await updatePrediction(predictionId, isCorrect);
             Alert.alert('Feedback Successful', `Your feedback on the prediction was provided successfully!`);
 
-            setCroppedImages(croppedImages.filter((_, index) => predictions[index].id !== predictionId));
-            setPredictions(predictions.filter(prediction => prediction.id !== predictionId));
+            const updatedCroppedImages = croppedImages.filter((_, index) => predictions[index].id !== predictionId);
+            const updatedPredictions = predictions.filter(prediction => prediction.id !== predictionId);
+
+            setCroppedImages(updatedCroppedImages);
+            setPredictions(updatedPredictions);
 
             if (updatedPredictions.length === 0) {
                 handleGoToOptionsScreen();
             }
         }
         catch (error) {
+            console.log(error);
             Alert.alert('Feedback Failed', 'An error occurred! Please try again!');
         }
     }
@@ -67,17 +71,18 @@ const DetectedSignsScreen = (props) => {
 
     if (croppedImages.length === 0 && predictions.length === 0) {
         return (
+            <ImageBackground source={require('../../assets/background.jpg')} style={styles.background}>
             <View style={styles.container}>
                 <Text style={styles.noSignsText}>There were no traffic signs detected!</Text>
                 <Button 
                     mode="contained"
                     onPress={handleGoToOptionsScreen}
-                    buttonColor="#4682B4"
+                    buttonColor="#E37383"
                 >
                     Go Back to the Options Screen
                 </Button>
             </View>
-
+            </ImageBackground>
         ) }
 
 
@@ -93,6 +98,12 @@ const DetectedSignsScreen = (props) => {
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+        backgroundColor: 'white'
+      },
     container: {
         flex: 1,
         justifyContent: 'center',

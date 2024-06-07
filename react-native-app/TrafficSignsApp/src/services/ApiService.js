@@ -43,7 +43,13 @@ export default class ApiService {
     }
 
     getDetectionStatistics() {
-        return fetch(this.apiBase + "detections/")
+        return fetch(this.apiBase + "statistics/detections/")
+        .then((response) => response.json())
+        .then((data) => data);
+    }
+
+    getPredictionStatistics() {
+        return fetch(this.apiBase + "statistics/predictions/")
         .then((response) => response.json())
         .then((data) => data);
     }

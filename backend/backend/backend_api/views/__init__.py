@@ -1,0 +1,6 @@
+from .ImageUploadView import ImageUploadView
+from .VideoUploadView import VideoUploadView
+from .PredictionListView import PredictionListView
+from .UpdatePredictionView import UpdatePredictionView
+from .DetectedTrafficSignsStatisticsView import DetectedTrafficSignsStatisticsView
+from .PredictionAccuracyStatisticsView import PredictionAccuracyStatisticsView

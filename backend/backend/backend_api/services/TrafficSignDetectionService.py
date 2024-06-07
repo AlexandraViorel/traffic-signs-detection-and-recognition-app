@@ -1,9 +1,10 @@
 from ultralytics import YOLO
+from ..constants import YOLO_MODEL_PATH
 
 
 class TrafficSignDetectionService:
-    def __init__(self, yolo_model_path):
-        self.yolo_model = YOLO(yolo_model_path)
+    def __init__(self):
+        self.yolo_model = YOLO(YOLO_MODEL_PATH)
 
     def detect_objects(self, image):
         results = self.yolo_model(image)

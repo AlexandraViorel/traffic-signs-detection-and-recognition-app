@@ -1,6 +1,6 @@
 import { ResizeMode, Video } from "expo-av";
 import { useState, useRef } from "react";
-import { StyleSheet, View, Alert, Dimensions } from "react-native";
+import { StyleSheet, View, Alert, Dimensions, ImageBackground } from "react-native";
 import { ActivityIndicator, Button, IconButton } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import { useAppContext } from '../appContext';
@@ -98,7 +98,7 @@ const UploadVideoScreen = (props) => {
                 <View style={styles.mediaContainer}>
                     <Video
                         source={{ uri: videoUri }}
-                        style={[styles.media, videoStyle]}
+                        style={[videoStyle]}
                         useNativeControls
                         resizeMode={ResizeMode.CONTAIN}
                         isLooping
@@ -106,18 +106,18 @@ const UploadVideoScreen = (props) => {
                 </View>
                 <View style={styles.buttonContainer}>
                     <Button 
-                        mode="contained" 
-                        onPress={uploadVideoAndPredict}
-                        buttonColor="#4682B4"
+                        mode="outlined" 
+                        onPress={handleDiscard}
+                        textColor="#E37383"
                     >
-                        Predict    
+                        Discard
                     </Button>
                     <Button 
                         mode="contained" 
-                        onPress={handleDiscard}
-                        buttonColor="#F88379"
+                        onPress={uploadVideoAndPredict}
+                        buttonColor="#E37383"
                     >
-                        Discard
+                        Predict    
                     </Button>
                 </View>
             </View>
@@ -125,21 +125,29 @@ const UploadVideoScreen = (props) => {
     }
 
     return (
-        <View style={styles.container}>
-            {croppedImages.length === 0 &&
-                <Button 
-                    mode="contained"
-                    buttonColor="#4682B4"
-                    onPress={pickVideo}
-                >
-                    Select a Video from Camera Roll
-                </Button>}
-        </View>
+        <ImageBackground source={require('../../assets/background.jpg')} style={styles.background}>
+            <View style={styles.container}>
+                {croppedImages.length === 0 &&
+                    <Button 
+                        mode="contained"
+                        buttonColor="#E37383"
+                        onPress={pickVideo}
+                    >
+                        Select a Video from Camera Roll
+                    </Button>}
+            </View>
+        </ImageBackground>
     );
 
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+        backgroundColor: 'white'
+      },
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -151,7 +159,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 40,
         width: '100%',
-        height: '80%'
+        height: '80%',
+        paddingTop: 150,
+        paddingBottom: 100
     },
     buttonContainer: {
         bottom: 25,
@@ -163,7 +173,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#007AFF',
         padding: 10,
         borderRadius: 5,
         margin: 20,
@@ -176,10 +185,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: 'white',
-    },
-    media: {
-        width: '100%',
-        height: '100%',
     },
     separator: {
         height: 10,

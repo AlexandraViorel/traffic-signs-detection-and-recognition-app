@@ -49,11 +49,22 @@ const AppProvider = ({ children }) => {
         }
     }
 
+    const getPredictionStatistics = async () => {
+        try {
+            const response = await services.ApiService.getPredictionStatistics();
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     const values = {
         uploadImage,
         uploadVideo,
         updatePrediction,
         getDetectionStatistics,
+        getPredictionStatistics,
     }
 
     return <AppContext.Provider value={values}>{children}</AppContext.Provider>;

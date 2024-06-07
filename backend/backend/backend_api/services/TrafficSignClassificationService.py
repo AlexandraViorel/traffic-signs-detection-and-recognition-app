@@ -2,15 +2,16 @@ from keras.models import load_model
 import csv
 import cv2
 import numpy as np
+from ..constants import CNN_MODEL_PATH, LABELS_CSV_PATH
 
 
-class ClassificationService:
-    def __init__(self, cnn_model_path, labels_csv_path):
-        self.cnn_model = load_model(cnn_model_path)
-        self.class_labels = self._get_class_labels(labels_csv_path)
+class TrafficSignClassificationService:
+    def __init__(self):
+        self.cnn_model = load_model(CNN_MODEL_PATH)
+        self.class_labels = self._get_class_labels(LABELS_CSV_PATH)
 
     @staticmethod
-    def _get_class_labels(self, csv_file_path):
+    def _get_class_labels(csv_file_path):
         classes = {}
         with open(csv_file_path, mode='r') as infile:
             reader = csv.reader(infile)

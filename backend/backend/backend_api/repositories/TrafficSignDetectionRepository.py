@@ -1,7 +1,11 @@
-from backend.backend_api.models import TrafficSignDetection
+from ..models import TrafficSignDetection
 
 
 class TrafficSignDetectionRepository:
+    @staticmethod
+    def get_all_detections():
+        return TrafficSignDetection.objects.all().order_by('detection_date')
+
     @staticmethod
     def get_or_create_detection(date):
         detection, created = TrafficSignDetection.objects.get_or_create(

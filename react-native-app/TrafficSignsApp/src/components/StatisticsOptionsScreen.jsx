@@ -3,7 +3,7 @@ import { useAppContext } from "../appContext";
 import { ActivityIndicator, Button, Card, IconButton, Title, Paragraph } from "react-native-paper";
 import { Alert, ScrollView, View, Text, StyleSheet, ImageBackground } from "react-native";
 
-const OptionsScreen = (props) => {
+const StatisticsOptionsScreen = (props) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -18,75 +18,41 @@ const OptionsScreen = (props) => {
         )
       }
     
-    const handleOpenCamera = () => {props.navigation.navigate("CameraScreen")}
-    const handleUploadImage = () => {props.navigation.navigate("UploadImageScreen")}
-    const handleUploadVideo = () => {props.navigation.navigate("UploadVideoScreen")}
-    const handleStatistics = () => {props.navigation.navigate("StatisticsOptionsScreen")}
+    const handleDetectionStatistics = () => {props.navigation.navigate("DetectionStatisticsScreen")}
+    const handlePredictionStatistics = () => {props.navigation.navigate("PredictionStatisticsScreen")}
 
 
     return (
         <ImageBackground source={require('../../assets/background.jpg')} style={styles.background}>
             <View style={styles.container}>
                 <View style={styles.row}>
-                    <Card style={styles.card}>
+                <Card style={styles.card}>
                     <Card.Content>
-                        <Title>Open Camera</Title>
-                        <Paragraph>Use your camera to take pictures/record videos.</Paragraph>
-                        <Button 
-                        mode="contained" 
-                        icon="camera" 
-                        onPress={handleOpenCamera}
-                        style={styles.button}
-                        buttonColor="#E37383"
-                        >
-                            Open Camera
-                        </Button>
-                    </Card.Content>
-                    </Card>
-                    <Card style={styles.card}>
-                    <Card.Content>
-                        <Title>Upload Image</Title>
-                        <Paragraph>Upload an image from your device.</Paragraph>
-                        <Button 
-                        mode="contained" 
-                        icon="image" 
-                        onPress={handleUploadImage}
-                        style={styles.button}
-                        buttonColor="#E37383"
-                        >
-                            Upload Image
-                        </Button>
-                    </Card.Content>
-                    </Card>
-                </View>
-                <View style={styles.row}>
-                    <Card style={styles.card}>
-                    <Card.Content>
-                        <Title>Upload Video</Title>
-                        <Paragraph>Upload a video from your device.</Paragraph>
-                        <Button 
-                        mode="contained" 
-                        icon="video" 
-                        onPress={handleUploadVideo}
-                        style={styles.button}
-                        buttonColor="#E37383"
-                        >
-                            Upload Video
-                        </Button>
-                    </Card.Content>
-                    </Card>
-                    <Card style={styles.card}>
-                    <Card.Content>
-                        <Title>Show Statistics</Title>
-                        <Paragraph>View traffic sign statistics.</Paragraph>
+                        <Title>Show Detection Statistics</Title>
+                        <Paragraph>View statistics related to the detected traffic signs.</Paragraph>
                         <Button 
                         mode="contained" 
                         icon="traffic-light"
-                        onPress={handleStatistics}
+                        onPress={handleDetectionStatistics}
                         style={styles.button}
                         buttonColor="#E37383"
                         >
-                            Show Statistics
+                            Show
+                        </Button>
+                    </Card.Content>
+                    </Card>
+                    <Card style={styles.card}>
+                    <Card.Content>
+                        <Title>Show Predictions Statistics</Title>
+                        <Paragraph>View statistics related to the predicted traffic signs.</Paragraph>
+                        <Button 
+                        mode="contained" 
+                        icon="traffic-light"
+                        onPress={handlePredictionStatistics}
+                        style={styles.button}
+                        buttonColor="#E37383"
+                        >
+                            Show
                         </Button>
                     </Card.Content>
                     </Card>
@@ -122,7 +88,7 @@ const styles = StyleSheet.create({
     card: {
         flex: 1,
         margin: 5,
-        height: 200,
+        height: 250,
         backgroundColor: '#E5E4E2',
     },
     cardActions: {
@@ -133,4 +99,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default OptionsScreen;
+export default StatisticsOptionsScreen;
