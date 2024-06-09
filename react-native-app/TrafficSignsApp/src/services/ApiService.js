@@ -1,7 +1,5 @@
 import { ip } from "../constants";
 
-// !! HERE CHANGE THE PATHS
-
 export default class ApiService {
     apiBase = `http://${ip}/api/`;
     constructor() {}
