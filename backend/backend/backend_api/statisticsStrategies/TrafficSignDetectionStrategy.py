@@ -10,6 +10,5 @@ class TrafficSignDetectionStrategy(StatisticsStrategy):
                 stats[date_str] = 0
             stats[date_str] += detection.number_of_signs
 
-        # Transform the stats dictionary into a list of dictionaries
         stats_list = [{'detection_date': date, 'number_of_signs': number_of_signs} for date, number_of_signs in stats.items()]
         return stats_list
